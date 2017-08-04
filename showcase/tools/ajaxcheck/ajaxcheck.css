@@ -1,0 +1,104 @@
+/**
+ * 额外的css
+ */
+
+* {
+    -webkit-user-select: auto;
+}
+
+.alert-info p {
+    color: #03a2b6;
+    background-color: #ddf3f5;
+}
+.main {
+    padding: 15px;
+}
+.main > .panel {
+    border: none;
+}
+.form-group > label:first-child {
+    display: block;
+}
+
+/* 返回json显示 */
+#result_wrap .panel {
+    margin-bottom: 0px;
+}
+.mock-result {
+    display: none;
+}
+.result-compare > div {
+    width: 50%;
+    display: block;
+}
+.result-compare .real-result {
+    padding-right: 5px;
+    float: left;
+}
+.result-compare .real-result > p:first-child {
+    display: none;
+}
+.result-compare .mock-result {
+    padding-left: 5px;
+    float: right;
+}
+.jsonview {
+    font-family: "Monaco", "Consolas";
+}
+
+.mb5 {
+    margin-bottom: 5px;
+}
+
+#param_jsonstr {
+    resize: none;
+    height: 80px;
+    text-overflow: auto;
+}
+
+#compare_wrap .panel-body {
+    font-size: 14px;
+    font-family: "Monaco", "Consolas";
+}
+
+
+/*图片附件相关*/
+.img-container {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    /*
+     border-top: 1px solid #adadad;
+    border-bottom: 1px solid #adadad;
+     * */
+    
+}
+/**
+ * 图片附件有关
+ */
+.img-container .img-photo {
+    height: 60px;
+    width: 60px;
+    -webkit-background-size: 60px 60px;
+    background-size: 60px 60px;
+    border: none;
+    float: left;
+    margin: 0px 2px;
+}
+.img-container .plus-pic {
+    /*让这个的zindex比图片预览的低*/
+    z-index: 1;
+    position: absolute;
+    left: 50px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+}
+.img-container .add-img {
+    padding:10px 0px;
+    position: relative;
+}
+.common-pull-left {
+    float: left;
+}

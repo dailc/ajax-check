@@ -1,0 +1,242 @@
+<!-- 
+        作者：戴荔春
+        创建时间: 2017/08/04
+        版本: [1.0, 2017/08/04 ]
+        版权: 江苏国泰新点软件有限公司
+        描述：ajax校验工具
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<!-- 统一页面字符编码 -->
+		<meta charset="UTF-8" />
+		<!-- 默认采用当前IE浏览器的最高模式进行渲染  -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<!-- 让国内基于webkit的浏览器默认采用webkit内核进行渲染 -->
+		<meta name="renderer" content="webkit" />
+		<!-- 移动端的响应式特性 -->
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<title>ajax接口测试与校验</title>
+		<script>
+            document.write("<script src='../../../js/cssboot.js?" + Math.random() + "'></scr" + "ipt>");
+        </script>
+        <script>
+            SrcBoot.output([
+                './libs/zui/css/zui.min.css',
+                './ajaxcheck.css'
+            ]);
+        </script>
+	</head>
+
+	<body>
+		<div class="main">
+			<div class="panel">
+				<div class="panel-body">
+					<p class="alert alert-info"> 该工具可以测试和校验接口。勾选“开启json数据校验”，分别输入<code>/jsoncheck/real</code>和<code>/jsoncheck/mock</code>，点击页面底部的“一键校验”，看看效果吧:)
+						<br />
+						 	这个工具的主要作用是，用来给接口人员自测写好的接口无问题，减轻前端人员的对接负担
+					</p>
+
+					<div class="form-group mb5">
+						<label>真实接口URL</label>
+						<input type="url" class="form-control" id="real_url">
+					</div>
+
+					<p class="with-padding hl-info">
+						<label class="checkbox-inline">
+						<input type="checkbox" id="compare_chk">开启JSON数据校验
+					</label>
+					</p>
+
+					<div class="form-group hidden">
+						<label>MOCK接口URL</label>
+						<input type="url" class="form-control" id="mock_url">
+					</div>
+
+					<!-- 请求类型配置 -->
+					<div class="form-group">
+						<label>请求类型</label>
+						<div>
+							<select id="req_method" class="form-control">
+							<option value="GET">GET</option>
+							<option value="POST" selected="selected">POST</option>
+							<option value="PUT">PUT</option>
+							<option value="DELETE">DELETE</option>
+						</select>
+						</div>
+					</div>
+
+					<!-- 请求参数配置 -->
+					<div class="form-group" id="params_wrap">
+						<label>请求参数</label>
+						<div class="with-padding hl-danger mb5">
+							<label class="checkbox-inline">
+								<input class="paramType" type="checkbox" id="param_jsonstr_chk">参数以字符串的方式放在Body中发送
+							</label>
+						</div>
+
+						<textarea class="form-control hidden" id="param_jsonstr" cols="30" rows="10"></textarea>
+
+						<button class="btn btn-sm btn-info add-line" type="button">
+						<i class="icon icon-plus-sign"></i> 新增参数
+					</button>
+					</div>
+					<p class="with-padding hl-special">
+						<label class="checkbox-inline">
+						<input type="checkbox" id="files_chk">添加上传文件配置
+					</label>
+					</p>
+					<!-- 文件参数配置 -->
+					<p class="alert alert-info hidden" id="files_tips">选择了文件后可以测试和校验文件上传接口</p>
+					<div class="form-group hidden" id="files_wrap">
+						<label>选择文件(files)</label>
+						<button class="btn btn-sm btn-info add-line" type="button" onclick="chooseH5File.click()">
+							<i class="icon icon-plus-sign"></i> 新增文件
+						</button>
+						<input type="file" id="chooseH5File" class="hidden" />
+						<div class="img-container" id="imgs_wrap">
+							<div id="img-group">
+							</div>
+							<!--<div id="addImg" class="mui-pull-left pic-div add-img">
+								<img class="img-photo" src="../img/img_addphoto.png" />
+								<div class="closeLayer common-hidden">
+									<img src="../img/img_delete_error.png" class="plus-pic" />
+								</div>
+							</div>-->
+
+						</div>
+					</div>
+
+					<p class="with-padding hl-special">
+						<label class="checkbox-inline">
+						<input type="checkbox" id="headers_chk" checked="checked">增加自定义请求头（headers）配置
+					</label>
+					</p>
+
+					<!-- headers参数配置 -->
+					<div class="form-group " id="headers_wrap">
+						<label>请求头（headers）参数</label>
+                        <p class="input-group">
+                            <input type="text" class="form-control" placeholder="参数名" value="X-Requested-With">
+                            <span class="input-group-addon fix-border fix-padding"></span>
+                            <input type="text" class="form-control" placeholder="参数值" value="XMLHttpRequest">
+                            <span class="input-group-btn">
+                                <button class="btn btn-danger del-line" type="button"><i class="icon icon-minus-sign"></i> 删除</button>
+                            </span>
+                        </p>
+						<button class="btn btn-sm btn-info add-line" type="button">
+						<i class="icon icon-plus-sign"></i> 新增参数
+					</button>
+					</div>
+
+					<!-- 返回的json -->
+					<div class="form-group">
+						<label>返回结果（只支持JSON）</label>
+
+						<div class="clearfix" id="result_wrap">
+							<!-- 实际请求结果 -->
+							<div class="real-result">
+								<p>
+									<button class="btn btn-sm btn-primary send-btn" type="button" data-tag="real">
+									<i class="icon icon-bolt"></i> 发送请求
+								</button>
+								</p>
+								<div class="panel">
+									<div class="panel-heading">
+										真实接口 返回数据
+										<span class="req-status"></span>
+									</div>
+									<div class="panel-body" id="real_json">
+
+									</div>
+								</div>
+							</div>
+
+							<!-- mock请求结果 -->
+							<div class="mock-result">
+								<!-- <p>
+								<button class="btn btn-sm btn-primary send-btn" type="button" data-tag="mock">
+									<i class="icon icon-bolt"></i> 发送请求
+								</button>
+							</p> -->
+								<div class="panel">
+									<div class="panel-heading">
+										MOCK接口 返回数据
+										<span class="req-status"></span>
+									</div>
+									<div class="panel-body" id="mock_json">
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- json数据检验 -->
+					<div class="form-group hidden" id="compare_wrap">
+						<label>JSON校验结果</label>
+						<p>
+							<button class="btn btn-sm btn-danger chk-btn" type="button">
+							<i class="icon icon-check-board"></i> 一键校验
+						</button>
+
+							<button class="btn btn-sm btn-info" type="button" id="btn-check-info">
+							<i class="icon icon-info"></i> 校验说明
+						</button>
+						</p>
+						<div id="check_info" class="hidden alert alert-info mb5">
+							<ul>
+								<li>
+									<p>目前的算法要正确运行的话，有个条件，即mock定义的json字段名，表述同一语义的，在不同数据路径上，命名应该保持一致，如：</p>
+									<pre class="line-numbers language-js">
+		            			<code class="language-js">
+"member": {
+    "userName": "Andrew",
+    "phoneNo": "13815622456",
+    "contacts": [{
+        "userName": "lucy",
+        "phoneNo": "15896548562"
+    }]
+}                               
+		                 		</code>
+		                 		</pre>
+									<p><code>member.userName</code>与<code>member.contacts[].userName</code>命名要保持一致</p>
+								</li>
+								<li>
+									<p>检验顺序：1.先进行名称匹配校验；2.（1）通过后校验字段缺失情况</p>
+								</li>
+							</ul>
+						</div>
+						<div class="panel">
+							<div class="panel-heading">
+								真实数据 与 MOCK数据 校验
+							</div>
+							<div class="panel-body">
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/x-hbs" id="param_line_hbs">
+			<p class="input-group">
+				<input type="text" class="form-control" placeholder="参数名">
+				<span class="input-group-addon fix-border fix-padding"></span>
+				<input type="text" class="form-control" placeholder="参数值">
+				<span class="input-group-btn">
+        	<button class="btn btn-danger del-line" type="button"><i class="icon icon-minus-sign"></i> 删除</button>
+        </span>
+			</p>
+		</script>
+		<script>
+            document.write("<script src='../../../js/jsboot.js?" + Math.random() + "'></scr" + "ipt>");
+        </script>
+		<script>
+			Util.loadJs('./ajaxcheck.js');
+		</script>
+	</body>
+
+</html>
