@@ -22,7 +22,6 @@
     
     
     function initPage() {
-        console.log(new window.XMLHttpRequest());
         initParamsSpec();
         initFileSpec();
         initMockUrl();
@@ -509,9 +508,6 @@
             Promise.all([defFunc('real'), defFunc('mock')]).then(function(arg) {
                 var real = arg[0],
                     mock = arg[1];
-                console.log("完毕:" + isUpload);
-                console.log("real:" + JSON.stringify(real));
-                console.log("mock:" + JSON.stringify(mock));
                 // 清除之前的输出
                 JsonChkLog.clear();
 
